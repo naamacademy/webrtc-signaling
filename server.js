@@ -1,9 +1,11 @@
 const WebSocket = require("ws");
 
-const server = new WebSocket.Server({ port: 3000 });
+// تغییر از localhost به 0.0.0.0 تا سرور روی همه IP‌ها گوش کند
+const server = new WebSocket.Server({ port: 3000, host: "0.0.0.0" });
 
-server.on("connection", (socket) => {
-  console.log("یک کاربر متصل شد");
+server.on("connection", (socket, req) => {
+  const clientIP = req.socket.remoteAddress;
+  console.log(`یک کاربر از ${clientIP} متصل شد`);
 
   socket.on("message", (message) => {
     console.log("پیام دریافت شد:", message);
@@ -17,8 +19,8 @@ server.on("connection", (socket) => {
   });
 
   socket.on("close", () => {
-    console.log("یک کاربر قطع شد");
+    console.log(`کاربر ${clientIP} قطع شد`);
   });
 });
 
-console.log("Signaling server is running on ws://localhost:3000");
+console.log("Signaling server is running on ws://0.0.0.0:3000");
